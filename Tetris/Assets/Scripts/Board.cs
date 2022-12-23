@@ -13,7 +13,7 @@ public class Board : MonoBehaviour
         get{
             Vector2Int position = new Vector2Int(-this.boardSize.x / 2, -this.boardSize.y / 2);
             return new RectInt(position, this.boardSize);
-        }
+        } 
     }
 
     private void Awake(){
@@ -63,4 +63,67 @@ public class Board : MonoBehaviour
             this.tilemap.SetTile(tilePosition, null);
         }
     }
+
+    public void ClearLines(){
+
+        RectInt bound = this.Bounds;
+        int row = Bounds.yMin; 
+
+        while (row < bound.yMax){
+
+            if(IsLineFull(row)){
+                LineClear(row);
+            } else{
+
+                row++;
+            }
+
+        }
+
+    }
+
+    private bool IsLineFull(int row){
+        
+        RectInt bound = this.Bounds;
+
+        for(int col = bound.xMin; col < Bounds.xMax; col++){
+
+            Vector3Int position = new Vector3Int(col, row, 0);
+
+            if (!this.tilemap.HasTile(position)){
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private void LineClear(int row){
+        RectInt bound = this.Bounds;
+
+        for(int col = bound.xMin; col < Bounds.xMax; col++){
+
+            Vector3Int position = new Vector3Int(col, row, 0);
+            this.tilemap.SetTile(position, null);
+
+        }
+
+        while(row < Bounds.yMax){
+            for( int col = Bounds.xMin; col < Bounds.xMax; col++){
+
+                Vector3Int position = new Vector3Int(col, row + 1, 0);
+                TileBase above = this.tilemap.GetTile(position);
+
+                position = new Vector3Int(col, row, 0);
+                this.tilemap.SetTile(position, above);
+                
+            }
+
+            row ++;
+
+        }
+
+    }
+
+
 }

@@ -28,11 +28,17 @@ public class Board : MonoBehaviour
         SpawnPiece();
     }
 
-    public void SpawnPiece(){
+    public void SpawnPiece(){ 
         int index = Random.Range(0, this.tetrominoes.Length);
-        TetrominoData data = this.tetrominoes[index];
+        TetrominoData data = this.tetrominoes[index]; 
+
         this.activePiece.Initialize(this, this.spawnPosition, data);
-        Set(activePiece);
+
+        if(isValidPosition(this.activePiece, this.spawnPosition)) {
+            Set(this.activePiece); 
+        } else {
+            GameOver();
+        }
     }
 
     public void Set(Piece piece){
@@ -125,5 +131,8 @@ public class Board : MonoBehaviour
 
     }
 
+    private void GameOver() { 
+        this.tilemap.ClearAllTiles();
+    }
 
 }
